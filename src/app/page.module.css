@@ -1,0 +1,69 @@
+
+.mainn{
+    display: flex;
+    flex-direction: column;
+}
+.logooo{
+    justify-content: flex-start;
+}
+.navinner{
+    display:flex;
+    justify-content: space-evenly;
+    width: 60%;
+    margin-left: auto;
+    color: #ffffff;
+    font-family: sans-serif;
+}
+.nav{
+    margin-top: 2vh;
+    display: flex;
+}
+.mainbox{
+    width: 50%;
+    position: relative;
+    bottom: 450px;
+    left: 100px;
+    
+}
+.connect{
+    color: #ffffff;
+    font-size: 50px;
+    font-family: sans-serif;
+    margin: 0px;
+}
+.anything{
+    color: #ffffff;
+    font-size: 50px;
+    font-family: sans-serif;
+    margin: 0px;
+}
+.build{
+    color: #0BCE83;
+    font-size: 50px;
+    font-family: sans-serif;
+    margin: 5px;
+}
+.b1{
+    color: black;
+    background-color: #0BCE83;
+    font-family: sans-serif;
+}
+.map{
+  
+    position: relative;
+    right: -780px;
+    top: 50px;
+    
+}
+
+.tageline1{
+    color: #ffffff;
+    height: 50px;    
+}
+.tageline{
+    display: flex;
+    flex-direction: column;
+    height: 50px;
+}
+
+
