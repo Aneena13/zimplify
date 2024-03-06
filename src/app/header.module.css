@@ -1,0 +1,20 @@
+.navinner{
+    display:flex;
+    justify-content: space-evenly;
+    width: 60%;
+    margin-left: auto;
+    color: #ffffff;
+    font-family: sans-serif;
+}
+.nav{
+    margin-top: 2vh;
+    display: flex;
+}
+.logooo{
+    justify-content: flex-start;
+}
+.b1{
+    color: black;
+    background-color: #0BCE83;
+    font-family: sans-serif;
+}

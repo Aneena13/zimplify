@@ -1,22 +1,13 @@
 import styles from "./page.module.css";
 import Image from "../../node_modules/next/image";
 import vector from "./images/vector.png";
-import logoo from "./images/logoo.png";
-import navbar from "./navbar";
+import Link from "../../node_modules/next/link";
+
 
 export default function Home() {
   return (
    <main>
     <div className={styles.mainn}>
-      <div className={styles.nav}><div className={styles.logooo}><Image src={logoo}/></div>
-      <div className={styles.navinner}>
-      <p>Home</p>
-      <p>Start Building</p>
-      <p>About us</p>
-      <p>Contact</p>
-      <button className={styles.b1}>Login</button>
-      </div>
-      </div>
       <div>
         <div className={styles.map}><Image src={vector} alt="map" width={550} height={550}/></div>
       </div>
@@ -27,7 +18,11 @@ export default function Home() {
           <h6 className={styles.anything}>anything.</h6>
         </div>
         
-        <div><button className={styles.b1}>get started</button></div>
+        <div><button className={styles.b1}><Link href="/page1">get started</Link></button></div>
+        <form>
+        <input type="text" name="name" placeholder="Paste repo link here.." className={styles.inputbox}/>
+        <button type="submit">GO</button>
+      </form>
       </div>
    </div>
    </main>

@@ -65,5 +65,9 @@
     flex-direction: column;
     height: 50px;
 }
-
+.input{
+    background-color: #ffffff;
+    color: #ffffff;
+    width: 100%;
+}
 
