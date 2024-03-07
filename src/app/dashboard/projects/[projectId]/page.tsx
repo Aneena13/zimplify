@@ -5,15 +5,34 @@ import { CreateProjectForm } from "../components/AddDeployment";
 import { ProjectStatusBadge } from "../components/ProjectStatusBadge";
 import { useDisclosure } from "@mantine/hooks";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { ProjectStatus } from "../../../../../types/enums";
+
+async function getStatus() {
+  return (await axios.get('https://go.zimplify.tech/status')).data
+}
 
 export default function ProjectPage({ params }) {
   const { data: project } = useProject(params.projectId)
   const [openDetails, { toggle }] = useDisclosure(false);
-    const router = useRouter()
+  const [status, setStatus] = useState(ProjectStatus.deploying);
+
+
+
+  useEffect(() => {
+    const timerId = setInterval(async () => {
+      const data = await getStatus()
+      setStatus(data.status)
+      console.log('res', data);
+    }, 1500)
+
+    return function cleanup() {
+      clearInterval(timerId)
+    }
+  }, [])
+
   if (!project) return
-
-
   const deploymentLink = `https://${project.subDomain}.zimplify.tech`
   return (
     <Stack>
@@ -21,25 +40,25 @@ export default function ProjectPage({ params }) {
         {project.name}
       </Title>
       <ProjectStatusBadge
-        status={project.status}
+        status={status || project.status}
       />
       <Group
-          align={'end'}
+        align={'end'}
       >
-      <TextInput
+        <TextInput
           style={{
-              flex: 1
+            flex: 1
           }}
-        label={'Deployment link'}
-        value={deploymentLink}
-      />
-      <Button
+          label={'Deployment link'}
+          value={deploymentLink}
+        />
+        <Button
           component={"a"}
           href={deploymentLink}
           target={'_blank'}
-      >
+        >
           Visit Site
-      </Button>
+        </Button>
       </Group>
       <Group mt={'sm'}>
         <Text>
