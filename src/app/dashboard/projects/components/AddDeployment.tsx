@@ -1,12 +1,12 @@
 'use client'
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { IconPlus } from "@tabler/icons-react";
-import { Button, Group, Modal, Stack, TextInput } from "@mantine/core";
+import { IconBrandNextjs, IconBrandReact, IconPlus } from "@tabler/icons-react";
+import { Button, Chip, Group, Modal, Select, Stack, TextInput } from "@mantine/core";
 import { useState } from "react";
 import { useCreateProjectMutation } from "@/backend/project/project.query";
 
-export function AddDeployment() {
+export function AddProject() {
 
   const [isOpened, { open, close }] = useDisclosure(false)
 
@@ -34,9 +34,9 @@ export function AddDeployment() {
         title={"Create Project"}
       >
         <Stack>
-          <CreateDeploymentForm
+          <CreateProjectForm
             initialValues={{ source }}
-            onClose={close}
+            onCancel={close}
           />
         </Stack>
       </Modal>
@@ -44,12 +44,31 @@ export function AddDeployment() {
   )
 }
 
-interface CreateDeploymentFormProps {
+const subDomains = [
+  "one",
+  "two",
+  "three",
+  "four",
+  "five"
+];
+
+const templates = [
+  {
+    label: 'ReactJS',
+    Icon: IconBrandReact,
+  },
+  {
+    label: 'NextJS',
+    Icon: IconBrandNextjs
+  }
+];
+
+interface CreateProjectFormProps {
   initialValues: any,
-  onClose: () => void,
+  onCancel?: () => void,
   onSubmit?: () => void
 }
-function CreateDeploymentForm({ initialValues, onClose, onSubmit }: CreateDeploymentFormProps) {
+export function CreateProjectForm({ initialValues, onCancel, onSubmit }: CreateProjectFormProps) {
 
   if (!initialValues) initialValues = {}
 
@@ -59,14 +78,16 @@ function CreateDeploymentForm({ initialValues, onClose, onSubmit }: CreateDeploy
       source: initialValues.source || "",
       buildDir: initialValues.buildDir || "/build",
       rootDir: initialValues.rootDir || "/",
-      buildCommand: initialValues.buildCommand || "npm run build"
+      buildCommand: initialValues.buildCommand || "npm run build",
+      subDomain: initialValues.subDomain || "one",
+      template: initialValues.template || templates[0].label
     }
   })
 
   const createMutation = useCreateProjectMutation()
 
   function handleClose() {
-    onClose()
+    onCancel?.()
   }
   function handleSubmit() {
     createMutation.mutate(form.values, {
@@ -86,18 +107,45 @@ function CreateDeploymentForm({ initialValues, onClose, onSubmit }: CreateDeploy
           label={'Source URL'}
           {...form.getInputProps('source')}
         />
+        <Chip.Group
+          {...form.getInputProps('template')}
+        >
+          <Group>
+            {templates.map(({ label, Icon }) => (
+              <Chip
+                value={label}
+                key={label}
+              >
+                <Group>
+                  <Icon
+                    stroke={1.5}
+                  />
+                  {label}
+                </Group>
+              </Chip>
+            ))}
+          </Group>
+        </Chip.Group>
         <TextInput
           label={'Build Command'}
           {...form.getInputProps('buildCommand')}
         />
-        <TextInput
-          label={'Build Directory'}
-          {...form.getInputProps('buildDir')}
+        <Group>
+          <TextInput
+            label={'Build Directory'}
+            {...form.getInputProps('buildDir')}
+          />
+          <TextInput
+            label={'Root Directory'}
+            {...form.getInputProps('rootDir')}
+          />
+        </Group>
+        <Select
+          data={subDomains}
+          label={'SubDomain'}
+          {...form.getInputProps('subDomain')}
         />
-        <TextInput
-          label={'Root Directory'}
-          {...form.getInputProps('rootDir')}
-        />
+
       </Stack>
       <Group
         justify={'space-between'}

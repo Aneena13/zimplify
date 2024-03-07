@@ -13,3 +13,6 @@ export async function getProjectById(projectId: string) {
 export async function getProjects() {
     return (await axiosClient.get(base)).data
 }
+export async function deleteProject(projectId: string) {
+    return (await axiosClient.delete(`${base}/${projectId}`)).data
+}

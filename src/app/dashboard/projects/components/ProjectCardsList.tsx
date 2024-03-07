@@ -1,6 +1,6 @@
 'use client'
 import { useProjects } from "@/backend/project/project.query";
-import { ProjectCard } from "./DeploymentCard";
+import { ProjectCard } from "./ProjectCard";
 
 export function ProjectCardsList() {
 
