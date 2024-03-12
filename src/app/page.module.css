@@ -1,4 +1,8 @@
 
+*{
+    overflow: hidden;
+    background-color :black;
+  }
 .mainn{
     display: flex;
     flex-direction: column;
@@ -36,6 +40,8 @@
     font-size: 50px;
     font-family: sans-serif;
     margin: 0px;
+    margin-left: 150px;
+    margin-top: -65px;
 }
 .build{
     color: #0BCE83;
@@ -46,7 +52,11 @@
 .b1{
     color: black;
     background-color: #0BCE83;
-    font-family: sans-serif;
+    font-family: Noto-serif;
+    border-radius: 8px;
+    font-size: 20px;
+    margin-top: 20px;
+    padding: 10px ;
 }
 .map{
   
@@ -65,9 +75,22 @@
     flex-direction: column;
     height: 50px;
 }
-.input{
-    background-color: #ffffff;
-    color: #ffffff;
-    width: 100%;
+.inputbox{
+    background-color:#242424;
+    color: grey;
+    width: 50%;
+    height: 20px;
+    margin-top: 15px;
+    border-radius: 5px;
+    margin-left: 70px;
+}
+.submit{
+    margin-top: 20px;
+    color: black;
+    background-color: #0BCE83;
+    font-family: sans-serif;
+    border-radius: 6px;
+    font-size: 20px;
+    margin-left: 15px;
 }
 

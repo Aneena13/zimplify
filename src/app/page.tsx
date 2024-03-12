@@ -1,10 +1,11 @@
+'use client'
 import styles from "./page.module.css";
-import Image from "../../node_modules/next/image";
+import Image from "next/image";
 import vector from "./images/vector.png";
-import Link from "../../node_modules/next/link";
+import { useRouter } from 'next/navigation'
 
-
-export default function Home() {
+export default function Page() {
+  const router = useRouter()
   return (
    <main>
     <div className={styles.mainn}>
@@ -18,11 +19,8 @@ export default function Home() {
           <h6 className={styles.anything}>anything.</h6>
         </div>
         
-        <div><button className={styles.b1}><Link href="/page1">get started</Link></button></div>
-        <form>
-        <input type="text" name="name" placeholder="Paste repo link here.." className={styles.inputbox}/>
-        <button type="submit">GO</button>
-      </form>
+        <div><button type="button" className={styles.b1} onClick={() => router.push('/page1')}>Get Started</button></div>
+        
       </div>
    </div>
    </main>
