@@ -6,6 +6,7 @@ import { UnstyledButton, Tooltip, Title, rem } from '@mantine/core';
 
 import { MantineLogo } from '@mantinex/mantine-logo';
 import classes from '../components/SideBar.module.css';
+
 const linksMockdata = [
   'Overview',
   'Sites',
@@ -18,8 +19,9 @@ const linksMockdata = [
 ];
 
 export default function SideBar() {
-  
+  const [active, setActive] = useState('Releases');
   const [activeLink, setActiveLink] = useState('Settings');
+  
 
   
 
@@ -45,7 +47,7 @@ export default function SideBar() {
           
             
           </div>
-          
+         
         </div>
         <div className={classes.main}>
           

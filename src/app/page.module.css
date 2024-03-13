@@ -1,8 +1,4 @@
 
-*{
-    overflow: hidden;
-    background-color :black;
-  }
 .mainn{
     display: flex;
     flex-direction: column;
@@ -41,7 +37,7 @@
     font-family: sans-serif;
     margin: 0px;
     margin-left: 150px;
-    margin-top: -65px;
+    margin-top: -80px;
 }
 .build{
     color: #0BCE83;
@@ -93,4 +89,7 @@
     font-size: 20px;
     margin-left: 15px;
 }
-
+.head{
+    color: #ffffff;
+    font-size: large;
+}

@@ -1,6 +1,6 @@
 import styles from "../page.module.css";
 import Image from "next/image";
-//import vector from "../images/vector.png";
+import vector from "../images/vector.png";
 
 
 
