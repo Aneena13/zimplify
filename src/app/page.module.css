@@ -93,3 +93,129 @@
     color: #ffffff;
     font-size: large;
 }
+.bar{
+    width: 25vw;
+    height: 0.3vw;
+    background-color: #0BCE83;
+}
+.one{
+    margin-top: 3vw;
+}
+.bartwo{
+    width: 25vw;
+    height: 0.3vw;
+    background-color: #ffffff;
+}
+.two{
+    margin-top: 3vw;
+    margin-left: 0.5vw;
+}
+.headtwo{
+    color: #ffffff;
+    font-size: large;
+}
+.barthree{
+    width: 25vw;
+    height: 0.3vw;
+    background-color: #ffffff;
+}
+.three{
+    margin-top: 3vw;
+    margin-left: 0.5vw;
+}
+.headthree{
+    color: #ffffff;
+    font-size: large;
+}
+.all{
+    display: flex;
+}
+.caption{
+    color: #ffffff;
+    font-size: 2.5vw;
+    font-weight: 300px;
+}
+.b2{
+    background-color: #121212;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;  
+    border: 2px solid #353535;
+    color: #ffffff;
+    height: 3vw;
+    width: 25vw;
+    margin-left: 2.5vw;
+    margin-top: 0.5vw;
+}
+.b2:hover{
+    border-color: #0BCE83;
+}
+.b3{
+    background-color: #121212;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;  
+    border: 2px solid #353535;
+    color: #ffffff;
+    height: 3vw;
+    width: 25vw;
+    margin-top: 2vw;
+    margin-left: 2.5vw;
+    margin-top: 0.5vw;
+}
+.b3:hover{
+    border-color: #0BCE83;
+}
+.b2box{
+    height: 10vw;
+    width: 35vw;
+    border: 2px solid #1d1c1c;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px; 
+}
+.b2head{
+    color: #b4b4b4;
+    font-family: sans-serif;
+    font-size: 1.2vw;
+    margin-left: 1.5vw;
+    margin-top: 2vw;
+}
+.b2wrap{
+    display: flex;
+}
+.b2img{
+    margin-left: 2vw;
+    margin-top: 1.5vw;
+}
+.b3box{
+    height: 10vw;
+    width: 35vw;
+    border: 2px solid #1d1c1c;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px; 
+    margin-left: 3vw;
+}
+.b3head{
+    color: #b4b4b4;
+    font-family: sans-serif;
+    font-size: 1.2vw;
+    margin-left: 1.5vw;
+    margin-top: 2vw;
+}
+.b3wrap{
+    display: flex;
+}
+.b3img{
+    margin-left: 2vw;
+    margin-top: 1.5vw;
+    
+}
+.boxes{
+    display: flex;
+}

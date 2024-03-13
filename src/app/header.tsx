@@ -10,7 +10,7 @@ export default function Header() {
             <p>Start Building</p>
             <p>About us</p>
             <p>Contact</p>
-            <button className={styles.b1}>Login</button>
+            
             </div>
             </div>
         </header>

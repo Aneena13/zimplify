@@ -25,6 +25,7 @@
     flex: 1;
     background-color: light-dark(var(--mantine-color-green), var(--mantine-color-dark-6));
     width: 10vw;
+    margin-top: 2vw;
   }
   
   .mainLink {
