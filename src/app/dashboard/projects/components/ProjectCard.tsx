@@ -8,6 +8,7 @@ import { ProjectStatusBadge } from "./ProjectStatusBadge";
 import { useTimeSince } from "./useTimeSince";
 import { useRouter } from "next/navigation";
 import { useDeleteProjectMutation } from "@/backend/project/project.query";
+import styles from "./card.styles.module.css"
 
 //@ts-ignore
 dayjs.extend(relativeTime)
@@ -24,16 +25,13 @@ export function ProjectCard({ project }) {
 
   return (
     <Paper
+      withBorder
       w={250}
       h={150}
       p="md"
-      shadow={'sm'}
+      shadow={'xl'}
       radius={'md'}
-      style={{
-        border: '1px solid rgba(0,0,0,.1)',
-        cursor: 'pointer'
-      }}
-
+      className={styles.card}
       onClick={() => {
         router.push(`/dashboard/projects/${project.id}`)
       }}

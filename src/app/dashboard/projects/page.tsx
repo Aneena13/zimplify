@@ -1,5 +1,5 @@
 import { Button, Flex, Group, Modal, Space, Stack, TextInput, Title } from "@mantine/core";
-import { AddProject } from "./components/AddDeployment";
+import { AddProject } from "./components/AddProject";
 import { ProjectCardsList } from "./components/ProjectCardsList";
 
 

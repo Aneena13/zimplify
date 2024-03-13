@@ -1,13 +1,14 @@
 'use client'
 import { useProject } from "@/backend/project/project.query";
-import { ActionIcon, Button, Collapse, Divider, Group, Stack, Text, TextInput, Title } from "@mantine/core";
-import { CreateProjectForm } from "../components/AddDeployment";
+import { Accordion, ActionIcon, Button, Code, Collapse, Divider, Group, Stack, Text, TextInput, Title } from "@mantine/core";
+import { CreateProjectForm } from "../components/AddProject";
 import { ProjectStatusBadge } from "../components/ProjectStatusBadge";
 import { useDisclosure } from "@mantine/hooks";
-import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
+import { IconArticle, IconChevronDown, IconChevronUp, IconPencil } from "@tabler/icons-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ProjectStatus } from "../../../../../types/enums";
+import { useParams } from "next/navigation";
 
 async function getStatus() {
   return (await axios.get('https://go.zimplify.tech/status')).data
@@ -60,32 +61,64 @@ export default function ProjectPage({ params }) {
           Visit Site
         </Button>
       </Group>
-      <Group mt={'sm'}>
-        <Text>
-          Details
-        </Text>
-        <Divider
-          style={{
-            flex: 1
-          }}
-        />
-        <ActionIcon
-          onClick={toggle}
-          variant={'subtle'}
-          color={'gray'}
-        >
-          {openDetails ? (
-            <IconChevronUp />
-          ) : (
-            <IconChevronDown />
-          )}
-        </ActionIcon>
-      </Group>
-      <Collapse in={openDetails}>
+      <ProjectAccordions />
+    </Stack>
+  )
+}
+
+function ProjectAccordions() {
+  const { projectId } = useParams<{ projectId: string }>()
+  const { data: project } = useProject(projectId)
+
+  return (
+    <Accordion
+      variant={'contained'}
+    >
+      <AccItem
+        Icon={IconPencil}
+        label={'Details'}
+      >
         <CreateProjectForm
           initialValues={project}
         />
-      </Collapse>
-    </Stack>
+      </AccItem>
+
+      <AccItem
+        Icon={IconArticle}
+        label={'Logs'}
+      >
+        <Code
+          block
+          bg={'black'}
+        >
+          {`
+
+          `}
+        </Code>
+      </AccItem>
+
+    </Accordion>
+  )
+}
+
+function AccItem({
+  Icon,
+  label,
+  children
+}) {
+
+  return (
+    <Accordion.Item
+      value={label}
+    >
+      <Accordion.Control
+        icon={<Icon />}
+      >
+        {label}
+      </Accordion.Control>
+      <Accordion.Panel>
+        {children}
+      </Accordion.Panel>
+    </Accordion.Item>
   )
 }

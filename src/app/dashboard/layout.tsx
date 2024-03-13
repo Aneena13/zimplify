@@ -1,61 +1,57 @@
 'use client'
-import { AppShell, Burger, Center, Group, Image, NavLink, Title } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { AppShell, Divider, Group, NavLink } from '@mantine/core';
 import { navItems } from './lib/navbar.constants';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
 
 
 export default function DashboardLayout({ children }) {
-    const [opened, { toggle }] = useDisclosure();
-    const pathName = usePathname()
+  const pathName = usePathname()
 
-    return (
-        <AppShell
-            header={{ height: 60 }}
-            navbar={{
-                width: 200,
-                breakpoint: 'sm',
-                collapsed: { mobile: !opened },
-            }}
-            padding="md"
+  return (
+    <AppShell
+      navbar={{
+        width: 200,
+        breakpoint: 0,
+      }}
+      padding="md"
+    >
+      <AppShell.Navbar
+        pt={'sm'}
+      >
+        <AppShell.Section
         >
-            <AppShell.Header>
-                <Group
-                    px={'sm'}
-                    h={'100%'}
-                >
-                    <Center>
-                        <Burger
-                            opened={opened}
-                            onClick={toggle}
-                            hiddenFrom="sm"
-                            size="sm"
-                        />
-                        <Title>
-                            Simplify
-                        </Title>
-                    </Center>
-                </Group>
-            </AppShell.Header>
+          <Image
+            src="/images/logoWithText.svg"
+            alt="Zimplify logo"
+            width={180}
+            height={45}
+            style={{
+              cursor: 'pointer',
+              margin: '0 10px 0 10px',
+            }}
+          >
+          </Image>
+        </AppShell.Section>
+        <Divider
+          my={'sm'}
+        />
+        {
+          navItems.map(Item => (
+            <NavLink
+              key={`${Item.label}-${Item.href}`}
+              href={Item.href}
+              label={Item.label}
+              active={pathName === Item.href}
+              leftSection={<Item.icon />}
+                component={Link}
+            />
 
-            <AppShell.Navbar
-                py={'sm'}
-            >
-                {
-                    navItems.map(Item => (
-                        <NavLink
-                            key={`${Item.label}-${Item.href}`}
-                            href={Item.href}
-                            label={Item.label}
-                            active={pathName===Item.href}
-                            leftSection={<Item.icon />}
-                        />
-
-                    ))
-                }
-            </AppShell.Navbar>
-
-            <AppShell.Main>{children}</AppShell.Main>
-        </AppShell>
-    );
+          ))
+        }
+      </AppShell.Navbar>
+      <AppShell.Main>{children}</AppShell.Main>
+    </AppShell>
+  );
 }

@@ -1,0 +1,10 @@
+.card {
+    cursor: pointer;
+    @mixin dark {
+        background-color: var(--mantine-color-dark-6);
+    }
+    @mixin hover {
+        transition: background-color 100ms ease-in-out;
+        background-color: var(--mantine-color-dark-5);
+    }
+}

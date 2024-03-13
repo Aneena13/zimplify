@@ -97,56 +97,54 @@ export function CreateProjectForm({ initialValues, onCancel, onSubmit }: CreateP
   }
 
   return (
-    <>
-      <Stack>
-        <TextInput
-          label={'Name'}
-          {...form.getInputProps('name')}
-        />
-        <TextInput
-          label={'Source URL'}
-          {...form.getInputProps('source')}
-        />
-        <Chip.Group
-          {...form.getInputProps('template')}
-        >
-          <Group>
-            {templates.map(({ label, Icon }) => (
-              <Chip
-                value={label}
-                key={label}
-              >
-                <Group>
-                  <Icon
-                    stroke={1.5}
-                  />
-                  {label}
-                </Group>
-              </Chip>
-            ))}
-          </Group>
-        </Chip.Group>
-        <TextInput
-          label={'Build Command'}
-          {...form.getInputProps('buildCommand')}
-        />
+    <Stack>
+      <TextInput
+        label={'Name'}
+        {...form.getInputProps('name')}
+      />
+      <TextInput
+        label={'Source URL'}
+        {...form.getInputProps('source')}
+      />
+      <Chip.Group
+        {...form.getInputProps('template')}
+      >
         <Group>
-          <TextInput
-            label={'Build Directory'}
-            {...form.getInputProps('buildDir')}
-          />
-          <TextInput
-            label={'Root Directory'}
-            {...form.getInputProps('rootDir')}
-          />
+          {templates.map(({ label, Icon }) => (
+            <Chip
+              value={label}
+              key={label}
+            >
+              <Group>
+                <Icon
+                  stroke={1.5}
+                />
+                {label}
+              </Group>
+            </Chip>
+          ))}
         </Group>
-        <Select
-          data={subDomains}
-          label={'SubDomain'}
-          {...form.getInputProps('subDomain')}
+      </Chip.Group>
+      <TextInput
+        label={'Build Command'}
+        {...form.getInputProps('buildCommand')}
+      />
+      <Group>
+        <TextInput
+          label={'Build Directory'}
+          {...form.getInputProps('buildDir')}
         />
+        <TextInput
+          label={'Root Directory'}
+          {...form.getInputProps('rootDir')}
+        />
+      </Group>
+      <Select
+        data={subDomains}
+        label={'SubDomain'}
+        {...form.getInputProps('subDomain')}
+      />
 
-      </Stack>
       <Group
         justify={'space-between'}
       >
@@ -162,6 +160,6 @@ export function CreateProjectForm({ initialValues, onCancel, onSubmit }: CreateP
           Submit
         </Button>
       </Group>
-    </>
+    </Stack>
   )
 }
