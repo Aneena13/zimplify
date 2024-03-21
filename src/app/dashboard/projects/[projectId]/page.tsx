@@ -3,35 +3,67 @@ import { useProject } from "@/backend/project/project.query";
 import { Accordion, ActionIcon, Button, Code, Collapse, Divider, Group, Stack, Text, TextInput, Title } from "@mantine/core";
 import { CreateProjectForm } from "../components/AddProject";
 import { ProjectStatusBadge } from "../components/ProjectStatusBadge";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useListState } from "@mantine/hooks";
 import { IconArticle, IconChevronDown, IconChevronUp, IconPencil } from "@tabler/icons-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ProjectStatus } from "../../../../../types/enums";
 import { useParams } from "next/navigation";
-
+import dayjs from 'dayjs'
+import { CpuUsageCard, MemoryUsageCard } from "../../page";
 async function getStatus() {
-  return (await axios.get('https://go.zimplify.tech/status')).data
+  return (await axios.get('https://go.zimplify.tech/project/status')).data
 }
+type ResourceUsage = {
+  cpu: string
+  memory: string
+  time: string
+}
+async function getResourceUsage(projectId: string) {
+  return (await axios.get('https://go.zimplify.tech/project/resource/' + projectId)).data as Omit<ResourceUsage, 'time'>
+}
+
+
 
 export default function ProjectPage({ params }) {
   const { data: project } = useProject(params.projectId)
   const [openDetails, { toggle }] = useDisclosure(false);
   const [status, setStatus] = useState(ProjectStatus.deploying);
 
-
+  const [resourceUsage, handlers] = useListState()
 
   useEffect(() => {
     const timerId = setInterval(async () => {
       const data = await getStatus()
       setStatus(data.status)
-      console.log('res', data);
+
+    }, 1500)
+
+    const resourseTimerId = setInterval(async () => {
+      const data = await getResourceUsage(params.projectId)
+      console.log('resource', data);
+      const currentTime = dayjs().format('HH:mm:ss');
+      handlers.append({
+        time: currentTime,
+        cpu: Number.parseInt((data.cpu.slice(-1) === '%') ? data.cpu.slice(0, -1) : data.cpu),
+        memory: (data.memory.slice(-1) === '%') ? data.memory.slice(0, -1) : data.memory
+      })
+
     }, 1500)
 
     return function cleanup() {
+      clearInterval(resourseTimerId)
       clearInterval(timerId)
     }
   }, [])
+
+
+  useEffect(() => {
+    if (resourceUsage.length > 10) {
+      handlers.remove(0)
+    }
+
+  }, [resourceUsage])
 
   if (!project) return
   const deploymentLink = `https://${project.subDomain}.zimplify.tech`
@@ -43,6 +75,23 @@ export default function ProjectPage({ params }) {
       <ProjectStatusBadge
         status={status || project.status}
       />
+
+      <Group>
+        <CpuUsageCard
+          data={resourceUsage.map((item) => ({
+            x: item.time,
+            y: item.cpu
+          }))}
+        />
+        <MemoryUsageCard
+          data={resourceUsage.map((item) => ({
+            x: item.time,
+            y: item.memory
+          }))}
+        />
+      </Group>
+
+
       <Group
         align={'end'}
       >

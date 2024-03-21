@@ -60,72 +60,82 @@ export default function DashboardPage() {
         Dashboard
       </Title>
       <Group>
-      <CpuUsageCard />
-      <MemoryUsageCard />
+        <CpuUsageCard />
+        <MemoryUsageCard />
       </Group>
     </Stack>
   )
 }
 
-function CpuUsageCard() {
-  return (
-      <NonInteractiveCard
-          w={500}
-      >
-          <Stack>
-              <Group
-                  gap={'xs'}
-              >
-              <Text>
-                  CPU Usage
-              </Text>
-              </Group>
-              <CPUUsageChart />
-          </Stack>
-      </NonInteractiveCard>
-  )
+type GraphData = {
+  x: string;
+  y: number;
 }
-function MemoryUsageCard() {
-  return (
-      <NonInteractiveCard
-          w={500}
-      >
-          <Stack>
-              <Text>
-                  Memory Usage
-              </Text>
-              <MemoryUsageChart />
-          </Stack>
-      </NonInteractiveCard>
-  )
+interface GraphProps {
+  data: GraphData[];
 }
-
-
-function MemoryUsageChart() {
-    return (
-        <AreaChart
-            h={250}
-            dataKey="date"
-            data={data}
-            series={[
-                { name: 'Apples', color: 'orange.6' },
-            ]}
-            curveType="monotone"
+export function CpuUsageCard({ data }: GraphProps) {
+  return (
+    <NonInteractiveCard
+      w={450}
+    >
+      <Stack>
+        <Group
+          gap={'xs'}
+        >
+          <Text>
+            CPU Usage
+          </Text>
+        </Group>
+        <CPUUsageChart
+          data={data}
         />
-    )
+      </Stack>
+    </NonInteractiveCard>
+  )
 }
 
-function CPUUsageChart() {
-  const [cpuData, handlers] = useListState(data);
-  const [count, setCount] = useState(27);
+export function MemoryUsageCard({data}: GraphProps) {
+  return (
+    <NonInteractiveCard
+      w={450}
+    >
+      <Stack>
+        <Text>
+          Memory Usage
+        </Text>
+        <MemoryUsageChart
+          data={data}
+        />
+      </Stack>
+    </NonInteractiveCard>
+  )
+}
+
+
+function MemoryUsageChart({ data }: GraphProps) {
+  return (
+    <AreaChart
+      h={250}
+      dataKey="x"
+      data={data}
+      series={[
+        { name: 'y', color: 'orange.6' },
+      ]}
+      curveType="monotone"
+    />
+  )
+}
+
+function CPUUsageChart({data}: GraphProps) {
 
   return (
     <AreaChart
       h={250}
-      dataKey="date"
-      data={cpuData}
+      dataKey="x"
+      data={data}
       series={[
-        { name: 'Apples', color: 'indigo.6' },
+        { name: 'y', color: 'indigo.6' },
       ]}
       curveType="monotone"
     />
