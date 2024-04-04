@@ -49,7 +49,7 @@ export function CpuUsageCard({ data }: GraphProps) {
 }
 
 export function MemoryUsageCard({ data, yMax }: GraphProps) {
-  const percentage = (data[data.length - 1]?.y / yMax) * 100
+  const percentage = data ? (data[data.length - 1]?.y / yMax) * 100 : 0;
   return (
     <NonInteractiveCard
       w={450}
