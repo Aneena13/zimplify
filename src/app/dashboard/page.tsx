@@ -5,54 +5,6 @@ import { useListState } from "@mantine/hooks";
 import { IconCpu } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
-const data = [
-  {
-    date: 'Mar 22',
-    Apples: 10,
-  },
-  {
-    date: 'Mar 23',
-    Apples: 20,
-  },
-  {
-    date: 'Mar 24',
-    Apples: 40,
-  },
-  {
-    date: 'Mar 25',
-    Apples: 30,
-  },
-  {
-    date: 'Mar 22',
-    Apples: 10,
-  },
-  {
-    date: 'Mar 23',
-    Apples: 20,
-  },
-  {
-    date: 'Mar 24',
-    Apples: 40,
-  },
-  {
-    date: 'Mar 25',
-    Apples: 30,
-  },
-
-  {
-    date: 'Mar 26',
-    Apples: 70,
-  },
-  {
-    date: 'Mar 22',
-    Apples: 50,
-  },
-  {
-    date: 'Mar 23',
-    Apples: 60,
-  },
-];
-
 export default function DashboardPage() {
   return (
     <Stack>
@@ -73,6 +25,7 @@ type GraphData = {
 }
 interface GraphProps {
   data: GraphData[];
+  yMax: number;
 }
 export function CpuUsageCard({ data }: GraphProps) {
   return (
@@ -95,17 +48,19 @@ export function CpuUsageCard({ data }: GraphProps) {
   )
 }
 
-export function MemoryUsageCard({data}: GraphProps) {
+export function MemoryUsageCard({ data, yMax }: GraphProps) {
+  const percentage = (data[data.length - 1]?.y / yMax) * 100
   return (
     <NonInteractiveCard
       w={450}
     >
       <Stack>
         <Text>
-          Memory Usage
+          Memory Usage {percentage.toFixed(2)}%
         </Text>
         <MemoryUsageChart
           data={data}
+          yMax={yMax}
         />
       </Stack>
     </NonInteractiveCard>
@@ -113,7 +68,7 @@ export function MemoryUsageCard({data}: GraphProps) {
 }
 
 
-function MemoryUsageChart({ data }: GraphProps) {
+function MemoryUsageChart({ data, yMax }: GraphProps) {
   return (
     <AreaChart
       h={250}
@@ -122,15 +77,17 @@ function MemoryUsageChart({ data }: GraphProps) {
       series={[
         { name: 'y', color: 'orange.6' },
       ]}
+      yAxisProps={{ domain: [0, Number.parseInt(yMax)] }}
       curveType="monotone"
     />
   )
 }
 
-function CPUUsageChart({data}: GraphProps) {
+function CPUUsageChart({ data }: GraphProps) {
 
   return (
     <AreaChart
+      yAxisProps={{ domain: [0, 100] }}
       h={250}
       dataKey="x"
       data={data}
@@ -145,7 +102,7 @@ function CPUUsageChart({data}: GraphProps) {
 interface NonInteractiveCardProps extends PaperProps {
   children: React.ReactNode;
 }
-function NonInteractiveCard({ children, ...props }: NonInteractiveCardProps) {
+export function NonInteractiveCard({ children, ...props }: NonInteractiveCardProps) {
   return (
     <Paper
       bg={'var(--mantine-color-dark-6)'}
