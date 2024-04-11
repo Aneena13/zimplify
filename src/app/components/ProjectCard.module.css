@@ -1,0 +1,47 @@
+.card {
+    background-color: rgb(7, 7, 7);
+    width: 30vw;
+    margin-left: 30vw;
+    margin-bottom: rem(1500px);
+  }
+  
+  .label {
+    font-family:
+      Greycliff CF,
+      var(--mantine-font-family);
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    
+  }
+  .lead {
+    font-family:
+      Greycliff CF,
+      var(--mantine-font-family);
+    font-weight: 700;
+    font-size: rem(22px);
+    line-height: 1;
+    color: #fff;
+  }
+  
+  .inner {
+    display: flex;
+    color:#fff;
+    @media (max-width: 20em) {
+      flex-direction: column;
+      width:2vw;
+    
+    
+    }
+  }
+  
+  .ring {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    
+    @media (max-width: 30em) {
+      justify-content: center;
+      margin-top: var(--mantine-spacing-md);
+    }
+  }
