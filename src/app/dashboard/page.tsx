@@ -11,10 +11,6 @@ export default function DashboardPage() {
       <Title>
         Dashboard
       </Title>
-      <Group>
-        <CpuUsageCard />
-        <MemoryUsageCard />
-      </Group>
     </Stack>
   )
 }
@@ -42,6 +38,7 @@ export function CpuUsageCard({ data }: GraphProps) {
         </Group>
         <CPUUsageChart
           data={data}
+          yMax={100}
         />
       </Stack>
     </NonInteractiveCard>
@@ -77,7 +74,7 @@ function MemoryUsageChart({ data, yMax }: GraphProps) {
       series={[
         { name: 'y', color: 'orange.6' },
       ]}
-      yAxisProps={{ domain: [0, Number.parseInt(yMax)] }}
+      yAxisProps={{ domain: [0, yMax] }}
       curveType="monotone"
     />
   )

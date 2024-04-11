@@ -4,10 +4,23 @@ import { navItems } from './lib/navbar.constants';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useWhoAmI } from '@/backend/user/user.query';
+import { useEffect } from 'react';
 
 
 export default function DashboardLayout({ children }) {
   const pathName = usePathname()
+  const {data: user, isError} = useWhoAmI();
+
+  useEffect(() => {
+    console.log('isError', isError, user)
+    if (!user) {
+      if(isError) {
+        console.log('User is not logged in');
+        window.location.href = '/sign-in';
+      }
+    }
+  }, [user, isError])
 
   return (
     <AppShell
