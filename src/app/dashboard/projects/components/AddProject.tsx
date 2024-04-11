@@ -2,7 +2,7 @@
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { IconBrandNextjs, IconBrandReact, IconPlus } from "@tabler/icons-react";
-import { Button, Chip, Group, Modal, Select, Stack, TextInput } from "@mantine/core";
+import { Button, Chip, Group, Modal, Select, Stack, TextInput, Textarea } from "@mantine/core";
 import { useState } from "react";
 import { useCreateProjectMutation } from "@/backend/project/project.query";
 
@@ -80,7 +80,8 @@ export function CreateProjectForm({ initialValues, onCancel, onSubmit }: CreateP
       rootDir: initialValues.rootDir || "/",
       buildCommand: initialValues.buildCommand || "npm run build",
       subDomain: initialValues.subDomain || "one",
-      template: initialValues.template || templates[0].label
+      template: initialValues.template || templates[0].label,
+      env: initialValues.env || ""
     }
   })
 
@@ -143,6 +144,13 @@ export function CreateProjectForm({ initialValues, onCancel, onSubmit }: CreateP
         data={subDomains}
         label={'SubDomain'}
         {...form.getInputProps('subDomain')}
+      />
+
+      <Textarea
+        label={'Environment Variables'}
+        {...form.getInputProps('env')}
+        resize="vertical"
+        spellCheck={false}
       />
 
       <Group
