@@ -2,9 +2,10 @@
     display:flex;
     justify-content: space-evenly;
     width: 60%;
-    margin-left: auto;
+    margin-left: 23vw;
     color: #ffffff;
     font-family: sans-serif;
+    font-size: small;
 }
 .nav{
     margin-top: 2vh;

@@ -1,5 +1,5 @@
 import { Button, Flex, Group, Modal, Space, Stack, TextInput, Title } from "@mantine/core";
-import { AddDeployment } from "./components/AddDeployment";
+import { AddProject } from "./components/AddProject";
 import { ProjectCardsList } from "./components/ProjectCardsList";
 
 
@@ -10,7 +10,7 @@ export default function DeploymentsPage() {
       <Title>
         Projects
       </Title>
-      <AddDeployment />
+      <AddProject />
       <Space h={20} />
       <Flex
           gap={'sm'}
