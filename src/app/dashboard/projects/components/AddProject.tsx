@@ -8,6 +8,10 @@ import { useCreateProjectMutation } from "@/backend/project/project.query";
 import { useGithubRepos } from "@/backend/github/repos/github-repo.query";
 import { GithubRepo } from "@/backend/github/repos/github-repo.api";
 import { useRouter } from "next/navigation";
+import { CreateProjectInput } from "@/backend/project/project.api";
+import { ProjectSourceType } from "../../../../../types/enums";
+import { useIntegration } from "@/backend/user/user.query";
+import { githubAuthUrl } from "@/app/sign-in/github/page";
 
 export function AddProject() {
   const router = useRouter();
@@ -43,20 +47,17 @@ const templates = [
 interface CreateProjectFormProps {
   onSubmit?: () => void
 }
-
-enum SourceType {
-  Github = 'github',
-  Custom = 'custom'
-}
 export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
 
-  const initialValues: any = {};
-  const form = useForm({
+  let initialValues: any = {};
+  const form = useForm<CreateProjectInput>({
     initialValues: {
       name: initialValues.name || "",
-      sourceType: initialValues.sourceType || "github",
       source: {
-        [initialValues.sourceType || "github"]: initialValues.source?.[initialValues.sourceType]
+        type: initialValues?.source?.type || ProjectSourceType.GITHUB,
+        github: {
+          repo: initialValues?.source?.github?.repo || ""
+        }
       },
       buildDir: initialValues.buildDir || "/build",
       rootDir: initialValues.rootDir || "/",
@@ -68,6 +69,7 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
   })
 
   const createMutation = useCreateProjectMutation()
+  const { data: integration } = useIntegration(form.values.source.type)
 
   function handleSubmit() {
     createMutation.mutate(form.values)
@@ -81,16 +83,18 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
         {...form.getInputProps('name')}
       />
       <Group
-    w={'100%'}
-    >
+        w={'100%'}
+      >
         <Select
           label={'Source'}
-          data={Object.values(SourceType).map(value => ({ value, label: value }))}
+          data={Object.values(ProjectSourceType).map(value => ({ value, label: value }))}
           {...form.getInputProps('sourceType')}
           w={120}
         />
-        {form.values.sourceType === SourceType.Github ? (
-          <ListRepos />
+        {form.values.source.type === ProjectSourceType.GITHUB ? (
+          <ListRepos
+            {...form.getInputProps('source.github.repo')}
+          />
         ) : (
           <TextInput
             style={{ flex: 1 }}
@@ -99,77 +103,86 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
           />
         )}
       </Group>
-      {form.values.sourceType === SourceType.Github && (
-        <Anchor
-          href={`https://github.com/apps/zimplify/installations/select_target`}
-        >
-          Can't find your repo? Give access to zimplify on github
-        </Anchor>
+      {form.values.source.type === ProjectSourceType.GITHUB && (
+        integration ? (
+          <Anchor
+            href={`https://github.com/apps/zimplify/installations/select_target`}
+          >
+            Can't find your repo? Give access to zimplify on github
+          </Anchor>
+
+        ) : (
+          <Anchor
+            href={githubAuthUrl}
+          >
+            Sign in with Github
+          </Anchor>
+        )
       )}
 
-    <Chip.Group
-      {...form.getInputProps('template')}
-    >
+      <Chip.Group
+        {...form.getInputProps('template')}
+      >
+        <Group>
+          {templates.map(({ label, Icon }) => (
+            <Chip
+              value={label}
+              key={label}
+            >
+              <Group>
+                {label}
+              </Group>
+            </Chip>
+          ))}
+        </Group>
+      </Chip.Group>
+      <TextInput
+        label={'Build Command'}
+        {...form.getInputProps('buildCommand')}
+      />
       <Group>
-        {templates.map(({ label, Icon }) => (
-          <Chip
-            value={label}
-            key={label}
-          >
-            <Group>
-              {label}
-            </Group>
-          </Chip>
-        ))}
+        <TextInput
+          label={'Build Directory'}
+          {...form.getInputProps('buildDir')}
+        />
+        <TextInput
+          label={'Root Directory'}
+          {...form.getInputProps('rootDir')}
+        />
       </Group>
-    </Chip.Group>
-    <TextInput
-      label={'Build Command'}
-      {...form.getInputProps('buildCommand')}
-    />
-    <Group>
-      <TextInput
-        label={'Build Directory'}
-        {...form.getInputProps('buildDir')}
+      <Select
+        data={subDomains}
+        label={'SubDomain'}
+        {...form.getInputProps('subDomain')}
       />
-      <TextInput
-        label={'Root Directory'}
-        {...form.getInputProps('rootDir')}
+
+      <Textarea
+        label={'Environment Variables'}
+        {...form.getInputProps('env')}
+        resize="vertical"
+        spellCheck={false}
       />
-    </Group>
-    <Select
-      data={subDomains}
-      label={'SubDomain'}
-      {...form.getInputProps('subDomain')}
-    />
 
-    <Textarea
-      label={'Environment Variables'}
-      {...form.getInputProps('env')}
-      resize="vertical"
-      spellCheck={false}
-    />
-
-    <Group
-      justify={'space-between'}
-    >
-      <Button
-        variant={'outline'}
-        onClick={() => { }}
+      <Group
+        justify={'space-between'}
       >
-        Cancel
-      </Button>
-      <Button
-        onClick={handleSubmit}
-      >
-        Submit
-      </Button>
-    </Group>
+        <Button
+          variant={'outline'}
+          onClick={() => { }}
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={handleSubmit}
+        >
+          Submit
+        </Button>
+      </Group>
     </Stack >
   )
 }
 
-function ListRepos() {
+function ListRepos(props: SelectProps) {
   const { data: repos, isLoading } = useGithubRepos()
 
   if (isLoading || !repos) {
@@ -191,6 +204,7 @@ function ListRepos() {
         label={'Select a repo'}
         //@ts-ignore
         renderOption={ProjectRenderer}
+        {...props}
       />
     </>
   )
@@ -225,7 +239,7 @@ function ProjectRenderer({ option, checked }: ProjectRendererProps) {
   )
 }
 
-const languageIconMap:any = {
+const languageIconMap: any = {
   "JavaScript": IconBrandReact,
   "TypeScript": IconBrandTypescript,
   'CSS': IconBrandCss3,

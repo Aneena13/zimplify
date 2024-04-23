@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { signin, whoami,signup, SignIn, CreateUser } from "./user.api";
+import { signin, whoami, signup, SignIn, CreateUser, getInegration } from "./user.api";
+import { IntegrationPlatform, ProjectSourceType } from "../../../types/enums";
 
 export const useWhoAmI = () =>
     useQuery({
@@ -31,3 +32,7 @@ export const useSignUpMutation = () => {
     })
 }
 
+export const useIntegration = (platform: ProjectSourceType) => useQuery({
+    queryKey: ['integration', platform],
+    queryFn: () => getInegration(platform)
+})

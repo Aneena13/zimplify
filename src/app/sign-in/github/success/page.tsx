@@ -2,19 +2,21 @@
 import { exchangeCode } from "@/backend/github/auth/github-auth.api";
 import { Loader } from "@mantine/core";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 
 export default function GithubSignInSuccessPage() {
 
   const searchParams = useSearchParams();
   const code = searchParams.get('code');
+  const router = useRouter();
 
   useEffect(() => {
     if (!code) return
 
     exchangeCode(code)
       .then(res => {
-        console.log(res);
+        router.push('/dashboard/projects/create')
       })
       .catch(err => {
         console.error(err);
