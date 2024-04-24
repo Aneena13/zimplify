@@ -27,3 +27,7 @@ export async function getProjects() {
 export async function deleteProject(projectId: string) {
     return (await axiosClient.delete(`${base}/${projectId}`)).data
 }
+
+export async function getLogs(projectId: string) {
+    return (await axiosClient.get(`https://go.zimplify.tech/project/logs/${projectId}`))?.data?.logs as string
+}

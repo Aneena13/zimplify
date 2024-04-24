@@ -1,5 +1,5 @@
 'use client'
-import { useProject } from "@/backend/project/project.query";
+import { useProject, useProjectLogs } from "@/backend/project/project.query";
 import { Accordion, ActionIcon, Button, Center, Code, Collapse, Divider, Group, Stack, Text, TextInput, Title } from "@mantine/core";
 import { CreateProjectForm } from "../components/AddProject";
 import { ProjectStatusBadge } from "../components/ProjectStatusBadge";
@@ -188,9 +188,10 @@ function LiveTextOnlyCard({ value, label }) {
 }
 
 
-function ProjectAccordions() {
+export function ProjectAccordions() {
   const { projectId } = useParams<{ projectId: string }>()
   const { data: project } = useProject(projectId)
+  const { data: logs } = useProjectLogs(projectId)
 
   return (
     <Accordion
@@ -213,9 +214,7 @@ function ProjectAccordions() {
           block
           bg={'black'}
         >
-          {`
-
-          `}
+          {logs}
         </Code>
       </AccItem>
 

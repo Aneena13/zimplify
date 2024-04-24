@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createProject, deleteProject, getProjectById, getProjects } from "./project.api";
+import { createProject, deleteProject, getLogs, getProjectById, getProjects } from "./project.api";
 
 export const useProject = (projectId: string) => useQuery({
   enabled: !!projectId,
@@ -37,3 +37,9 @@ export const useDeleteProjectMutation = () => {
     }
   })
 }
+
+export const useProjectLogs = (projectId: string) => useQuery({
+  enabled: !!projectId,
+  queryFn: () => getLogs(projectId),
+  queryKey: ['project', 'logs', projectId]
+})
