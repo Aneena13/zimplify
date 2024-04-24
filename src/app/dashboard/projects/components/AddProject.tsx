@@ -25,14 +25,6 @@ export function AddProject() {
   )
 }
 
-const subDomains = [
-  "one",
-  "two",
-  "three",
-  "four",
-  "five"
-];
-
 const templates = [
   {
     label: 'ReactJS',
@@ -62,7 +54,7 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
       buildDir: initialValues.buildDir || "/build",
       rootDir: initialValues.rootDir || "/",
       buildCommand: initialValues.buildCommand || "npm run build",
-      subDomain: initialValues.subDomain || "one",
+      subDomain: initialValues.subDomain || "",
       template: initialValues.template || templates[0].label,
       env: initialValues.env || "NODE_ENV=production\nCI=true\n"
     }
@@ -150,8 +142,7 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
           {...form.getInputProps('rootDir')}
         />
       </Group>
-      <Select
-        data={subDomains}
+      <TextInput
         label={'SubDomain'}
         {...form.getInputProps('subDomain')}
       />
