@@ -1,3 +1,4 @@
+import { IntegrationPlatform, ProjectSourceType } from "../../../types/enums";
 import { axiosClient } from "../axio";
 
 const base = '/user';
@@ -21,5 +22,10 @@ export async function signin(data: SignIn) {
 }
 export async function whoami() {
     const res = await axiosClient.get(`${base}/whoami`)
+    return res.data;
+}
+
+export async function getInegration(platform: ProjectSourceType) {
+    const res = await axiosClient.get(`/integration/${platform}`)
     return res.data;
 }

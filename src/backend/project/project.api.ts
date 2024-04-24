@@ -1,8 +1,19 @@
+import { ProjectSource } from "../../../types/types";
 import { axiosClient } from "../axio";
 
 const base = `/project`;
 
-export async function createProject(data) {
+export type CreateProjectInput = {
+    name: string;
+    source: ProjectSource
+    buildDir: string;
+    buildCommand: string;
+    rootDir: string;
+    subDomain: string;
+    template: string;
+    env: string;
+}
+export async function createProject(data: CreateProjectInput) {
     return await axiosClient.post(base, data);
 }
 

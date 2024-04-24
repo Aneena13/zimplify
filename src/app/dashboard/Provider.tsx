@@ -15,6 +15,7 @@ export function Provider({ children }) {
     <QueryClientProvider client={client}>
       <MantineProvider
         defaultColorScheme="dark"
+        forceColorScheme="dark"
           theme={theme}
       >
         {children}

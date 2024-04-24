@@ -1,56 +1,29 @@
 'use client'
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { IconBrandNextjs, IconBrandReact, IconPlus } from "@tabler/icons-react";
-import { Button, Chip, Group, Modal, Select, Stack, TextInput, Textarea } from "@mantine/core";
+import { IconBrandCss3, IconBrandKotlin, IconBrandNextjs, IconBrandPython, IconBrandReact, IconBrandTypescript, IconLock, IconPlus, IconTerminal2 } from "@tabler/icons-react";
+import { Anchor, Button, Chip, Group, Modal, Select, SelectProps, Skeleton, Stack, Text, TextInput, Textarea } from "@mantine/core";
 import { useState } from "react";
 import { useCreateProjectMutation } from "@/backend/project/project.query";
+import { useGithubRepos } from "@/backend/github/repos/github-repo.query";
+import { GithubRepo } from "@/backend/github/repos/github-repo.api";
+import { useRouter } from "next/navigation";
+import { CreateProjectInput } from "@/backend/project/project.api";
+import { ProjectSourceType } from "../../../../../types/enums";
+import { useIntegration } from "@/backend/user/user.query";
+import { githubAuthUrl } from "@/app/sign-in/github/page";
 
 export function AddProject() {
-
-  const [isOpened, { open, close }] = useDisclosure(false)
-
-  const [source, setSource] = useState("")
-
+  const router = useRouter();
   return (
-    <Group>
-      <TextInput
-        placeholder={`Enter github url`}
-        style={{
-          flex: 1
-        }}
-        value={source}
-        onChange={(e) => setSource(e.target.value)}
-      />
-      <Button
-        leftSection={<IconPlus />}
-        onClick={open}
-      >
-        Create Deployment
-      </Button>
-      <Modal
-        opened={isOpened}
-        onClose={close}
-        title={"Create Project"}
-      >
-        <Stack>
-          <CreateProjectForm
-            initialValues={{ source }}
-            onCancel={close}
-          />
-        </Stack>
-      </Modal>
-    </Group>
+    <Button
+      leftSection={<IconPlus />}
+      onClick={() => router.push('projects/create')}
+    >
+      Create Deployment
+    </Button>
   )
 }
-
-const subDomains = [
-  "one",
-  "two",
-  "three",
-  "four",
-  "five"
-];
 
 const templates = [
   {
@@ -64,36 +37,34 @@ const templates = [
 ];
 
 interface CreateProjectFormProps {
-  initialValues: any,
-  onCancel?: () => void,
   onSubmit?: () => void
 }
-export function CreateProjectForm({ initialValues, onCancel, onSubmit }: CreateProjectFormProps) {
+export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
 
-  if (!initialValues) initialValues = {}
-
-  const form = useForm({
+  let initialValues: any = {};
+  const form = useForm<CreateProjectInput>({
     initialValues: {
       name: initialValues.name || "",
-      source: initialValues.source || "",
+      source: {
+        type: initialValues?.source?.type || ProjectSourceType.GITHUB,
+        github: {
+          repo: initialValues?.source?.github?.repo || ""
+        }
+      },
       buildDir: initialValues.buildDir || "/build",
       rootDir: initialValues.rootDir || "/",
       buildCommand: initialValues.buildCommand || "npm run build",
-      subDomain: initialValues.subDomain || "one",
+      subDomain: initialValues.subDomain || "",
       template: initialValues.template || templates[0].label,
-      env: initialValues.env || ""
+      env: initialValues.env || "NODE_ENV=production\nCI=true\n"
     }
   })
 
   const createMutation = useCreateProjectMutation()
+  const { data: integration } = useIntegration(form.values.source.type)
 
-  function handleClose() {
-    onCancel?.()
-  }
   function handleSubmit() {
-    createMutation.mutate(form.values, {
-      onSuccess: handleClose
-    })
+    createMutation.mutate(form.values)
     onSubmit?.()
   }
 
@@ -103,10 +74,44 @@ export function CreateProjectForm({ initialValues, onCancel, onSubmit }: CreateP
         label={'Name'}
         {...form.getInputProps('name')}
       />
-      <TextInput
-        label={'Source URL'}
-        {...form.getInputProps('source')}
-      />
+      <Group
+        w={'100%'}
+      >
+        <Select
+          label={'Source'}
+          data={Object.values(ProjectSourceType).map(value => ({ value, label: value }))}
+          {...form.getInputProps('sourceType')}
+          w={120}
+        />
+        {form.values.source.type === ProjectSourceType.GITHUB ? (
+          <ListRepos
+            {...form.getInputProps('source.github.repo')}
+          />
+        ) : (
+          <TextInput
+            style={{ flex: 1 }}
+            label={'Source URL'}
+            {...form.getInputProps('source.custom')}
+          />
+        )}
+      </Group>
+      {form.values.source.type === ProjectSourceType.GITHUB && (
+        integration ? (
+          <Anchor
+            href={`https://github.com/apps/zimplify/installations/select_target`}
+          >
+            Can't find your repo? Give access to zimplify on github
+          </Anchor>
+
+        ) : (
+          <Anchor
+            href={githubAuthUrl}
+          >
+            Sign in with Github
+          </Anchor>
+        )
+      )}
+
       <Chip.Group
         {...form.getInputProps('template')}
       >
@@ -117,9 +122,6 @@ export function CreateProjectForm({ initialValues, onCancel, onSubmit }: CreateP
               key={label}
             >
               <Group>
-                <Icon
-                  stroke={1.5}
-                />
                 {label}
               </Group>
             </Chip>
@@ -140,8 +142,7 @@ export function CreateProjectForm({ initialValues, onCancel, onSubmit }: CreateP
           {...form.getInputProps('rootDir')}
         />
       </Group>
-      <Select
-        data={subDomains}
+      <TextInput
         label={'SubDomain'}
         {...form.getInputProps('subDomain')}
       />
@@ -158,7 +159,7 @@ export function CreateProjectForm({ initialValues, onCancel, onSubmit }: CreateP
       >
         <Button
           variant={'outline'}
-          onClick={handleClose}
+          onClick={() => { }}
         >
           Cancel
         </Button>
@@ -168,6 +169,81 @@ export function CreateProjectForm({ initialValues, onCancel, onSubmit }: CreateP
           Submit
         </Button>
       </Group>
-    </Stack>
+    </Stack >
+  )
+}
+
+function ListRepos(props: SelectProps) {
+  const { data: repos, isLoading } = useGithubRepos()
+
+  if (isLoading || !repos) {
+    return (
+      <Skeleton
+        style={{ flex: 1 }}
+        mt={15}
+        h={'40'}
+      />
+    )
+  }
+
+  return (
+    <>
+      <Select
+        style={{ flex: 1 }}
+        searchable
+        data={repos.map(r => ({ value: r.id.toString(), label: r.name, language: r.language, visibility: r.visibility }))}
+        label={'Select a repo'}
+        //@ts-ignore
+        renderOption={ProjectRenderer}
+        {...props}
+      />
+    </>
+  )
+}
+
+
+interface ProjectRendererProps {
+  option: GithubRepo & { label: string },
+  checked: boolean
+}
+function ProjectRenderer({ option, checked }: ProjectRendererProps) {
+  return (
+    <Group
+      justify={'space-between'}
+      w={'100%'}
+    >
+      <Group>
+        <LanguageIcon
+          language={option.language}
+        />
+        <Text>
+          {option.label}
+        </Text>
+      </Group>
+      {option.visibility === 'private' && (
+        <IconLock
+          stroke={1}
+          color={'#ffbf00'}
+        />
+      )}
+    </Group>
+  )
+}
+
+const languageIconMap: any = {
+  "JavaScript": IconBrandReact,
+  "TypeScript": IconBrandTypescript,
+  'CSS': IconBrandCss3,
+  "Python": IconBrandPython,
+  "Kotlin": IconBrandKotlin,
+}
+
+function LanguageIcon({ language }: any) {
+  const Icon = languageIconMap[language]
+  if (!Icon) return <IconTerminal2 stroke={1} />
+  return (
+    <Icon
+      stroke={1}
+    />
   )
 }
