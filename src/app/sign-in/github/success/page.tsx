@@ -16,7 +16,7 @@ export default function GithubSignInSuccessPage() {
 
     exchangeCode(code)
       .then(res => {
-        router.push('/dashboard/projects/create')
+        router.push('/dashboard/projects/create/github')
       })
       .catch(err => {
         console.error(err);

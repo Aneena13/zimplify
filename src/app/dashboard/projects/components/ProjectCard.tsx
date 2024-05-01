@@ -8,12 +8,15 @@ import { ProjectStatusBadge } from "./ProjectStatusBadge";
 import { useTimeSince } from "./useTimeSince";
 import { useRouter } from "next/navigation";
 import { useDeleteProjectMutation } from "@/backend/project/project.query";
-import styles from "./card.styles.module.css"
+import { ZCard } from "@/app/components/ZCard";
 
 //@ts-ignore
 dayjs.extend(relativeTime)
 
-export function ProjectCard({ project }) {
+interface ProjectCardProps {
+  project: any
+}
+export function ProjectCard({ project }: ProjectCardProps) {
 
   const timeSince = useTimeSince(project.createdAt);
   const router = useRouter()
@@ -24,17 +27,8 @@ export function ProjectCard({ project }) {
   }
 
   return (
-    <Paper
-      withBorder
-      w={250}
-      h={150}
-      p="md"
-      shadow={'xl'}
-      radius={'md'}
-      className={styles.card}
-      onClick={() => {
-        router.push(`/dashboard/projects/${project.id}`)
-      }}
+    <ZCard
+      onClick={() => router.push(`/dashboard/projects/${project.id}`)}
     >
       <Flex
         direction={'column'}
@@ -95,6 +89,6 @@ export function ProjectCard({ project }) {
           />
         </Group>
       </Flex>
-    </Paper>
+    </ZCard>
   )
 }

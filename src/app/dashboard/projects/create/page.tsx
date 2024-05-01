@@ -1,7 +1,12 @@
-import { Center, Stack, Title } from "@mantine/core";
+'use client'
+import { Center, Group, Stack, Title } from "@mantine/core";
 import { CreateProjectForm } from "../components/AddProject";
+import { useSearchParams } from "next/navigation";
+import { ProjectSourceSelector } from "../components/ProjectSourceSelector";
 
 export default function CreateProjectPage() {
+  const params = useSearchParams();
+  const isSourceConfigured = !!params.get('source')
   return (
     <Stack>
       <Title
@@ -11,10 +16,16 @@ export default function CreateProjectPage() {
       </Title>
       <Center>
         <Stack
-          maw={900}
+          maw={600}
           w="100%"
         >
-          <CreateProjectForm />
+          {isSourceConfigured ? (
+            <CreateProjectForm />
+          ) : (
+            <Group>
+              <ProjectSourceSelector />
+            </Group>
+          )}
         </Stack>
       </Center>
     </Stack>

@@ -38,7 +38,7 @@ export default function DashboardLayout({ children }) {
           <Image
             src="/images/logoWithText.svg"
             alt="Zimplify logo"
-            width={180}
+            width={150}
             height={45}
             style={{
               cursor: 'pointer',

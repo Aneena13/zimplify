@@ -3,15 +3,16 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { IconBrandCss3, IconBrandKotlin, IconBrandNextjs, IconBrandPython, IconBrandReact, IconBrandTypescript, IconLock, IconPlus, IconTerminal2 } from "@tabler/icons-react";
 import { Anchor, Button, Chip, Group, Modal, Select, SelectProps, Skeleton, Stack, Text, TextInput, Textarea } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCreateProjectMutation } from "@/backend/project/project.query";
 import { useGithubRepos } from "@/backend/github/repos/github-repo.query";
 import { GithubRepo } from "@/backend/github/repos/github-repo.api";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CreateProjectInput } from "@/backend/project/project.api";
 import { ProjectSourceType } from "../../../../../types/enums";
 import { useIntegration } from "@/backend/user/user.query";
-import { githubAuthUrl } from "@/app/sign-in/github/page";
+import { githubAuthUrl } from "../create/github/page";
+
 
 export function AddProject() {
   const router = useRouter();
@@ -36,17 +37,20 @@ const templates = [
   }
 ];
 
+export const github_auth_repo_url = `https://github.com/apps/zimplify/installations/select_target`;
 interface CreateProjectFormProps {
   onSubmit?: () => void
 }
 export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
+  const params = useSearchParams();
+  const source = params.get('source') as ProjectSourceType
 
   let initialValues: any = {};
   const form = useForm<CreateProjectInput>({
     initialValues: {
       name: initialValues.name || "",
       source: {
-        type: initialValues?.source?.type || ProjectSourceType.GITHUB,
+        type: initialValues?.source?.type || source,
         github: {
           repo: initialValues?.source?.github?.repo || ""
         }
@@ -59,6 +63,12 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
       env: initialValues.env || "NODE_ENV=production\nCI=true\n"
     }
   })
+
+  useEffect(() => {
+    if (source) {
+      form.setFieldValue('source.type', source)
+    }
+  }, [source])
 
   const createMutation = useCreateProjectMutation()
   const { data: integration } = useIntegration(form.values.source.type)
@@ -80,7 +90,8 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
         <Select
           label={'Source'}
           data={Object.values(ProjectSourceType).map(value => ({ value, label: value }))}
-          {...form.getInputProps('sourceType')}
+          {...form.getInputProps('source.type')}
+          disabled={true}
           w={120}
         />
         {form.values.source.type === ProjectSourceType.GITHUB ? (
@@ -98,7 +109,7 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
       {form.values.source.type === ProjectSourceType.GITHUB && (
         integration ? (
           <Anchor
-            href={`https://github.com/apps/zimplify/installations/select_target`}
+            href={github_auth_repo_url}
           >
             Can't find your repo? Give access to zimplify on github
           </Anchor>
@@ -144,6 +155,8 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
       </Group>
       <TextInput
         label={'SubDomain'}
+        rightSection={'.zimplify.tech'}
+        rightSectionWidth={120}
         {...form.getInputProps('subDomain')}
       />
 
@@ -173,7 +186,7 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
   )
 }
 
-function ListRepos(props: SelectProps) {
+export function ListRepos(props: SelectProps) {
   const { data: repos, isLoading } = useGithubRepos()
 
   if (isLoading || !repos) {
