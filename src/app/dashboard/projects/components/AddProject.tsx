@@ -1,11 +1,10 @@
 'use client'
 import { useForm } from "@mantine/form";
-import { useDisclosure } from "@mantine/hooks";
 import { IconBrandCss3, IconBrandKotlin, IconBrandNextjs, IconBrandPython, IconBrandReact, IconBrandTypescript, IconLock, IconPlus, IconTerminal2 } from "@tabler/icons-react";
 import { Anchor, Button, Chip, Group, Modal, Select, SelectProps, Skeleton, Stack, Text, TextInput, Textarea } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useCreateProjectMutation } from "@/backend/project/project.query";
-import { useGithubRepos } from "@/backend/github/repos/github-repo.query";
+import { useGithubRepoBranches, useGithubRepos } from "@/backend/github/repos/github-repo.query";
 import { GithubRepo } from "@/backend/github/repos/github-repo.api";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CreateProjectInput } from "@/backend/project/project.api";
@@ -52,7 +51,9 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
       source: {
         type: initialValues?.source?.type || source,
         github: {
-          repo: initialValues?.source?.github?.repo || ""
+          repo: initialValues?.source?.github?.repo || "",
+          branch: initialValues?.source?.github?.branch || ""
+
         }
       },
       buildDir: initialValues.buildDir || "/build",
@@ -60,7 +61,7 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
       buildCommand: initialValues.buildCommand || "npm run build",
       subDomain: initialValues.subDomain || "",
       template: initialValues.template || templates[0].label,
-      env: initialValues.env || "NODE_ENV=production\nCI=true\n"
+      env: initialValues.env || "NODE_ENV=production\nCI=true\n",
     }
   })
 
@@ -122,6 +123,13 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
           </Anchor>
         )
       )}
+
+      <Group>
+        <ListBranches
+          repoId={parseInt(form.values.source.github?.repo || "")}
+          {...form.getInputProps('source.github.branch')}
+        />
+      </Group>
 
       <Chip.Group
         {...form.getInputProps('template')}
@@ -186,6 +194,36 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
   )
 }
 
+interface ListBranchesProps extends SelectProps {
+  repoId: number
+}
+function ListBranches({ repoId, ...props }: ListBranchesProps) {
+  const { data: branches, isLoading } = useGithubRepoBranches(repoId)
+
+  if (isLoading) {
+    return (
+      <Skeleton
+        style={{ flex: 1 }}
+        mt={19}
+        h={'40px'}
+      />
+    )
+  }
+
+  return (
+    <Select
+      unselectable={"on"}
+      disabled={!repoId}
+      style={{ flex: 1 }}
+      data={branches?.map(b => b.name)}
+      defaultValue={branches?.[0]?.name}
+      placeholder="Select a branch"
+      label={'Select a branch'}
+      {...props}
+    />
+  )
+}
+
 export function ListRepos(props: SelectProps) {
   const { data: repos, isLoading } = useGithubRepos()
 
@@ -202,6 +240,7 @@ export function ListRepos(props: SelectProps) {
   return (
     <>
       <Select
+        unselectable="on"
         style={{ flex: 1 }}
         searchable
         data={repos.map(r => ({ value: r.id.toString(), label: r.name, language: r.language, visibility: r.visibility }))}

@@ -25,7 +25,7 @@ async function getResourceUsage(projectId: string) {
 
 
 
-export default function ProjectPage({ params }) {
+export default function ProjectPage({ params }: any) {
   const { data: project } = useProject(params.projectId)
   const [openDetails, { toggle }] = useDisclosure(false);
   const [status, setStatus] = useState(ProjectStatus.deploying);

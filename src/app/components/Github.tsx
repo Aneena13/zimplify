@@ -24,7 +24,7 @@ export default function Page() {
         <p className={styles.headthree}>3. Configure Site and Deploy</p>
         </div>
         </div>
-        <p className={styles.caption}>Let's deploy your project...</p>
+        <p className={styles.caption}>Let&apos;s deploy your project...</p>
 
         <div className={styles.boxes}>
         <div className={styles.b2box}>

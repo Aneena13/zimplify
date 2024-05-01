@@ -9,6 +9,7 @@ export function ProjectSourceSelector() {
     <>
       {Object.values(ProjectSourceType).map(st => (
         <SourceTypeCard
+          key={st}
           sourceType={st}
         />
       ))}
