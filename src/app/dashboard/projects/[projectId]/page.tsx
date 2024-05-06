@@ -11,9 +11,7 @@ import { ProjectStatus } from "../../../../../types/enums";
 import { useParams } from "next/navigation";
 import dayjs from 'dayjs'
 import { CpuUsageCard, MemoryUsageCard, NonInteractiveCard } from "../../page";
-async function getStatus() {
-  return (await axios.get('https://go.zimplify.tech/project/status')).data
-}
+
 type ResourceUsage = {
   cpu: string
   memory: string
@@ -26,9 +24,8 @@ async function getResourceUsage(projectId: string) {
 
 
 export default function ProjectPage({ params }: any) {
-  const { data: project } = useProject(params.projectId)
+  const { data: project, refetch } = useProject(params.projectId)
   const [openDetails, { toggle }] = useDisclosure(false);
-  const [status, setStatus] = useState(ProjectStatus.deploying);
   const [memoryMax, setMemoryMax] = useState(512)
 
   const [resourceUsage, handlers] = useListState()
@@ -36,13 +33,8 @@ export default function ProjectPage({ params }: any) {
 
 
   useEffect(() => {
-    const timerId = setInterval(async () => {
-      const data = await getStatus()
-      setStatus(data.status)
-
-    }, 1500)
-
     const resourceTimerId = setInterval(async () => {
+      refetch()
       const data = await getResourceUsage(params.projectId)
       setCurrentResource(data)
       console.log('resource', data);
@@ -57,11 +49,10 @@ export default function ProjectPage({ params }: any) {
         memory: data['memory-used'].slice(0, -3)
       })
 
-    }, 3000)
+    }, 5000)
 
     return function cleanup() {
       clearInterval(resourceTimerId)
-      clearInterval(timerId)
     }
   }, [])
 
@@ -81,7 +72,7 @@ export default function ProjectPage({ params }: any) {
         {project.name}
       </Title>
       <ProjectStatusBadge
-        status={status || project.status}
+        status={project.status}
       />
 
       <Group

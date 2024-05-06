@@ -4,7 +4,8 @@ import { createProject, deleteProject, getLogs, getProjectById, getProjects } fr
 export const useProject = (projectId: string) => useQuery({
   enabled: !!projectId,
   queryFn: () => getProjectById(projectId),
-  queryKey: ['project', projectId]
+  queryKey: ['project', projectId],
+  staleTime: 1000 * 5
 })
 
 export const useProjects = () => useQuery({
