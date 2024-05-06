@@ -73,9 +73,15 @@ export function CreateProjectForm({ onSubmit }: CreateProjectFormProps) {
 
   const createMutation = useCreateProjectMutation()
   const { data: integration } = useIntegration(form.values.source.type)
+  const router = useRouter();
 
   function handleSubmit() {
-    createMutation.mutate(form.values)
+    createMutation.mutate(form.values, {
+      onSuccess: () => {
+        form.reset();
+        router.push('/dashboard/projects')
+      }
+    })
     onSubmit?.()
   }
 
