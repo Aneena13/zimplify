@@ -16,7 +16,7 @@ export default function LoginCard() {
 
   useEffect(() => {
     if (user) {
-      window.location.href = '/dashboard';
+      window.location.href = '/dashboard/projects';
     }
   }, [user]);
 
@@ -81,7 +81,7 @@ export function SignUpCard() {
 
   useEffect(() => {
     if (user) {
-      window.location.href = '/dashboard';
+      window.location.href = '/dashboard/projects';
     }
   }, [user]);
 
